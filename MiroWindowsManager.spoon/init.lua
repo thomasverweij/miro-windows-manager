@@ -138,6 +138,46 @@ function obj:_fullDimension(dim)
   end
 end
 
+function obj:_middle()
+  if hs.window.focusedWindow() then
+    local win = hs.window.frontmostWindow()
+    local id = win:id()
+    local screen = win:screen()
+
+    cell = hs.grid.get(win, screen)
+
+    cell.w = self.GRID.w / (4/3)
+    cell.h = self.GRID.h 
+    cell.x = (self.GRID.w - self.GRID.w / (4/3)) / 2
+    cell.y = (self.GRID.h - self.GRID.h) / 2
+
+    hs.grid.set(win, cell, screen)
+  end
+end
+
+function obj:_middleAll()
+  for k,win in pairs(hs.window.visibleWindows()) do
+
+    local id = win:id()
+    local screen = win:screen()
+
+    cell = hs.grid.get(win, screen)
+
+    cell.w = self.GRID.w / (4/3)
+    cell.h = self.GRID.h 
+    cell.x = (self.GRID.w - self.GRID.w / (4/3)) / 2
+    cell.y = (self.GRID.h - self.GRID.h) / 2
+
+    hs.grid.set(win, cell, screen)  
+  end
+end
+
+function obj:_fullscreenAll()
+  for k,v in pairs(hs.window.visibleWindows()) do
+    v:maximize()
+  end
+end
+
 --- MiroWindowsManager:bindHotkeys()
 --- Method
 --- Binds hotkeys for Miro's Windows Manager
@@ -222,6 +262,18 @@ function obj:bindHotkeys(mapping)
 
   hs.hotkey.bind(mapping.fullscreen[1], mapping.fullscreen[2], function ()
     self:_nextFullScreenStep()
+  end)
+
+  hs.hotkey.bind(mapping.middle[1], mapping.middle[2], function ()
+    self:_middle()
+  end)
+
+  hs.hotkey.bind(mapping.fullscreenAll[1], mapping.fullscreenAll[2], function ()
+    self:_fullscreenAll()
+  end)
+
+  hs.hotkey.bind(mapping.middleAll[1], mapping.middleAll[2], function ()
+    self:_middleAll()
   end)
 
 end
