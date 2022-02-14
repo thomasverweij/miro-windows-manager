@@ -172,6 +172,13 @@ function obj:_middleAll()
   end
 end
 
+function obj:_fullscreen()
+  if hs.window.focusedWindow() then
+    local win = hs.window.frontmostWindow()
+    win:maximize()
+  end
+end
+
 function obj:_fullscreenAll()
   for k,v in pairs(hs.window.visibleWindows()) do
     v:maximize()
@@ -204,18 +211,22 @@ function obj:bindHotkeys(mapping)
   hs.inspect(mapping)
   print("Bind Hotkeys for Miro's Windows Manager")
 
+  -- hs.hotkey.bind(mapping.down[1], mapping.down[2], function ()
+  --   self._pressed.down = true
+  --   if self._pressed.up then 
+  --     self:_fullDimension('h')
+  --   else
+  --     self:_nextStep('h', true, function (cell, nextSize)
+  --       cell.y = self.GRID.h - self.GRID.h / nextSize
+  --       cell.h = self.GRID.h / nextSize
+  --     end)
+  --   end
+  -- end, function () 
+  --   self._pressed.down = false
+  -- end)
+
   hs.hotkey.bind(mapping.down[1], mapping.down[2], function ()
-    self._pressed.down = true
-    if self._pressed.up then 
-      self:_fullDimension('h')
-    else
-      self:_nextStep('h', true, function (cell, nextSize)
-        cell.y = self.GRID.h - self.GRID.h / nextSize
-        cell.h = self.GRID.h / nextSize
-      end)
-    end
-  end, function () 
-    self._pressed.down = false
+    self:_middle()
   end)
 
   hs.hotkey.bind(mapping.right[1], mapping.right[2], function ()
@@ -246,19 +257,24 @@ function obj:bindHotkeys(mapping)
     self._pressed.left = false
   end)
 
+  -- hs.hotkey.bind(mapping.up[1], mapping.up[2], function ()
+  --   self._pressed.up = true
+  --   if self._pressed.down then 
+  --       self:_fullDimension('h')
+  --   else
+  --     self:_nextStep('h', false, function (cell, nextSize)
+  --       cell.y = 0
+  --       cell.h = self.GRID.h / nextSize
+  --     end)
+  --   end
+  -- end, function () 
+  --   self._pressed.up = false
+  -- end)
+
   hs.hotkey.bind(mapping.up[1], mapping.up[2], function ()
-    self._pressed.up = true
-    if self._pressed.down then 
-        self:_fullDimension('h')
-    else
-      self:_nextStep('h', false, function (cell, nextSize)
-        cell.y = 0
-        cell.h = self.GRID.h / nextSize
-      end)
-    end
-  end, function () 
-    self._pressed.up = false
+    self:_fullscreen()
   end)
+
 
   hs.hotkey.bind(mapping.fullscreen[1], mapping.fullscreen[2], function ()
     self:_nextFullScreenStep()
