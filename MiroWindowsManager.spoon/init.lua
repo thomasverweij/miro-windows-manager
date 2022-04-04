@@ -155,6 +155,50 @@ function obj:_middle()
   end
 end
 
+function obj:_minimize()
+  if hs.window.focusedWindow() then
+    local win = hs.window.frontmostWindow()
+    win:minimize()
+  end
+end
+
+function obj:_fullscreen()
+  if hs.window.focusedWindow() then
+    local win = hs.window.frontmostWindow()
+      if win:screen():id() == 459085702 then -- TODO: move hardcoded value to config
+        local id = win:id()
+        local screen = win:screen()
+
+        cell = hs.grid.get(win, screen)
+        cell.w = self.GRID.w / (4/3)
+        cell.h = self.GRID.h 
+        cell.x = (self.GRID.w - self.GRID.w / (4/3)) / 2
+        cell.y = (self.GRID.h - self.GRID.h) / 2
+        
+        hs.grid.set(win, cell, screen)
+    else
+        win:maximize()
+    end
+  end
+end
+
+function obj:_autoResizeWindow(win)
+    if win:screen():id() == 459085702 then
+        local id = win:id()
+        local screen = win:screen()
+
+        cell = hs.grid.get(win, screen)
+        cell.w = self.GRID.w / (4/3)
+        cell.h = self.GRID.h 
+        cell.x = (self.GRID.w - self.GRID.w / (4/3)) / 2
+        cell.y = (self.GRID.h - self.GRID.h) / 2
+        
+        hs.grid.set(win, cell, screen)
+    else
+        win:maximize()
+    end
+end
+
 function obj:_middleAll()
   for k,win in pairs(hs.window.visibleWindows()) do
 
@@ -169,13 +213,6 @@ function obj:_middleAll()
     cell.y = (self.GRID.h - self.GRID.h) / 2
 
     hs.grid.set(win, cell, screen)  
-  end
-end
-
-function obj:_fullscreen()
-  if hs.window.focusedWindow() then
-    local win = hs.window.frontmostWindow()
-    win:maximize()
   end
 end
 
@@ -226,8 +263,9 @@ function obj:bindHotkeys(mapping)
   -- end)
 
   hs.hotkey.bind(mapping.down[1], mapping.down[2], function ()
-    self:_middle()
+    self:_minimize()
   end)
+
 
   hs.hotkey.bind(mapping.right[1], mapping.right[2], function ()
     self._pressed.right = true
@@ -257,24 +295,23 @@ function obj:bindHotkeys(mapping)
     self._pressed.left = false
   end)
 
-  -- hs.hotkey.bind(mapping.up[1], mapping.up[2], function ()
-  --   self._pressed.up = true
-  --   if self._pressed.down then 
-  --       self:_fullDimension('h')
-  --   else
-  --     self:_nextStep('h', false, function (cell, nextSize)
-  --       cell.y = 0
-  --       cell.h = self.GRID.h / nextSize
-  --     end)
-  --   end
-  -- end, function () 
-  --   self._pressed.up = false
-  -- end)
+--   hs.hotkey.bind(mapping.up[1], mapping.up[2], function ()
+--     self._pressed.up = true
+--     if self._pressed.down then 
+--         self:_fullDimension('h')
+--     else
+--       self:_nextStep('h', false, function (cell, nextSize)
+--         cell.y = 0
+--         cell.h = self.GRID.h / nextSize
+--       end)
+--     end
+--   end, function () 
+--     self._pressed.up = false
+--   end)
 
   hs.hotkey.bind(mapping.up[1], mapping.up[2], function ()
     self:_fullscreen()
   end)
-
 
   hs.hotkey.bind(mapping.fullscreen[1], mapping.fullscreen[2], function ()
     self:_nextFullScreenStep()
