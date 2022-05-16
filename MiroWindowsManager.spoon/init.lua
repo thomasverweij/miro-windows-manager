@@ -54,6 +54,9 @@ obj.fullScreenSizes = {1, 4/3, 2}
 --- This parameter is used at the spoon's `:init()`
 obj.GRID = {w = 24, h = 24}
 
+--- device id of ultra wide monitor (different fullscreen behavior)
+obj.ultrawideMonitor = 459085702
+
 obj._pressed = {
   up = false,
   down = false,
@@ -165,7 +168,7 @@ end
 function obj:_fullscreen()
   if hs.window.focusedWindow() then
     local win = hs.window.frontmostWindow()
-      if win:screen():id() == 459085702 then -- TODO: move hardcoded value to config
+      if win:screen():id() == self.ultrawideMonitor then
         local id = win:id()
         local screen = win:screen()
 
